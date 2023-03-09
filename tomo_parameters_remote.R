@@ -50,7 +50,7 @@ tomo$domain$long_breaks          <- NULL
 tomo$domain$alt_breaks           <- NULL
 
 # Below overrides resolutions set above
-tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 45, 58, 76, 75, tomo$domain$lat_north)
+tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 45, 58, 76, 80, tomo$domain$lat_north)
 tomo$domain$lat_res_vec  <- c(5, 1, 0.5, 1, 1)
 
 tomo$domain$long_breaks  <- c(tomo$domain$long_west, 0, 5, 35, 40, tomo$domain$long_east)
