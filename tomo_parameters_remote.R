@@ -57,7 +57,7 @@ tomo$domain$long_breaks  <- c(tomo$domain$long_west, 0, 5, 35, 40, tomo$domain$l
 tomo$domain$long_res_vec <- c(5, 1, 0.5, 1, 5)
 
 tomo$domain$alt_breaks   <- c(tomo$domain$alt_lo, 50 * 10^3, 400 * 10^3, 600 * 10^3, tomo$domain$alt_hi)
-tomo$domain$alt_res_vec   <- c(20, 20, 50, 100) * 10^3
+tomo$domain$alt_res_vec   <- c(10, 10, 50, 100) * 10^3
 
 # Distance (m) between points in raycasting approximation
 tomo$domain$path_resolution <- 1000
