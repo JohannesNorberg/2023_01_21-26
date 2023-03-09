@@ -50,14 +50,14 @@ tomo$domain$long_breaks          <- NULL
 tomo$domain$alt_breaks           <- NULL
 
 # Below overrides resolutions set above
-tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 50, 58, 70, 75, tomo$domain$lat_north)
-tomo$domain$lat_res_vec  <- c(1, 1, 1, 1, 1)
+tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 45, 58, 76, 75, tomo$domain$lat_north)
+tomo$domain$lat_res_vec  <- c(5, 1, 0.5, 1, 1)
 
-tomo$domain$long_breaks  <- c(tomo$domain$long_west, 5, 10, 35, 40, tomo$domain$long_east)
-tomo$domain$long_res_vec <- c(5, 1, 1, 1, 5)
+tomo$domain$long_breaks  <- c(tomo$domain$long_west, 0, 5, 35, 40, tomo$domain$long_east)
+tomo$domain$long_res_vec <- c(5, 1, 0.5, 1, 5)
 
 tomo$domain$alt_breaks   <- c(tomo$domain$alt_lo, 50 * 10^3, 400 * 10^3, 600 * 10^3, tomo$domain$alt_hi)
-tomo$domain$alt_res_vec   <- c(25, 25, 50, 100) * 10^3
+tomo$domain$alt_res_vec   <- c(20, 20, 50, 100) * 10^3
 
 # Distance (m) between points in raycasting approximation
 tomo$domain$path_resolution <- 1000
@@ -178,7 +178,7 @@ tomo$prior$dynamic_profiles <- tomo$IONOSONDE$station_all
 # Use previous posterior mean as prior
 # Prior mean is multiplied with "mean_scale"
 tomo$prior$RECURSIVE_PRIOR <- TRUE
-tomo$prior$mean_parameters$mean_scale <- 0.9
+tomo$prior$mean_parameters$mean_scale <- 0.95
 # If previous data is older than t_max_mean
 # The mean is then automatically recalibrated
 tomo$prior$mean_parameters$t_max_diff <- 60
@@ -464,7 +464,7 @@ tomo$style$teclim  <- c(0, 50)
 tomo$style$altlim  <- c(0, 800)
 # tomo$style$longlim <- c(18, 32)
 # tomo$style$latlim  <- c(58, 72)
-tomo$style$longlim <- c(5, 40)
+tomo$style$longlim <- c(5, 35)
 tomo$style$latlim  <- c(55, 80)
 # tomo$style$longlim <- c(125, 150)
 # tomo$style$latlim  <- c(25, 55)
