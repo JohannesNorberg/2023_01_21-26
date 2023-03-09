@@ -229,7 +229,7 @@ tomo$prior$mean_parameters$hilevel  <- 0
 # FALSE: (default) peak is moved to tomo$prior$peak_alt altitude
 tomo$prior$covariance_parameters$dynamic_width <- FALSE
 
-tomo$prior$covariance_parameters$power_perc      <- 0.05
+tomo$prior$covariance_parameters$power_perc      <- 0.1
 tomo$prior$covariance_parameters$sd_peak_width   <- 0 * 10^3
 tomo$prior$covariance_parameters$peak_alt_offset <- 0 * 10^3
 tomo$prior$covariance_parameters$scaleH          <- 120 * 10^3

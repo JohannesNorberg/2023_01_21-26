@@ -42,7 +42,7 @@ cat("\nStarting bias calibration\n")
 
 source("tomo_paths.R")
 source("tomo_parameters.R")
-# source("tomo_parameters_remote.R")
+source("tomo_parameters_remote.R")
 
 t0 <- as.POSIXct("2023-01-20 09:20:00", tz = "UTC")
 t1 <- as.POSIXct("2023-01-20 10:20:00", tz = "UTC")
@@ -77,7 +77,7 @@ ESTIMATE_DCB <- TRUE
 tomo$GNSS$modelling_error <- 10
 
 
-tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- FALSE
+tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- TRUE
 tomo$IONOSONDE$topside <- TRUE
 tomo$IONOSONDE$alt_limit <- 800 * 10^3
 tomo$IONOSONDE$times  <- 60 #minutes backwards from t1
