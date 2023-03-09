@@ -250,10 +250,10 @@ tomo$prior$covariance_parameters$l_hor  	     <- 5
 tomo$prior$covariance_parameters$l_long 	     <- 5
 tomo$prior$covariance_parameters$a_scale         <- 0.1972156
 
-tomo$prior$covariance_parameters$l_vert          <- 100 * 10^3
-tomo$prior$covariance_parameters$l_hor           <- 10
-tomo$prior$covariance_parameters$l_long          <- 10
-tomo$prior$covariance_parameters$a_scale         <- 0.1712219
+# tomo$prior$covariance_parameters$l_vert          <- 100 * 10^3
+# tomo$prior$covariance_parameters$l_hor           <- 10
+# tomo$prior$covariance_parameters$l_long          <- 10
+# tomo$prior$covariance_parameters$a_scale         <- 0.1712219
 
 
 # tomo$prior$covariance_parameters$l_vert 		 <- 500 * 10^3
