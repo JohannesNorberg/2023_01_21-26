@@ -5,6 +5,7 @@
 #devtools::load_all("/Users/norberg/Dropbox/R_packages/ionotomor")
 #devtools::load_all("/home/ubuntu/ionotomor")
 #setwd("/Users/norberg/Dropbox/Projects/2023_01_21-26")
+#setwd("/home/ubuntu/2023_01_21-26")
 
 # ------------------------------------------------------------------------------
 # Read configurations and GNSS data
@@ -39,6 +40,10 @@ online <- TRUE
 # ------------------------------------------------------------------------------
 cat("\nStarting bias calibration\n")
 
+source("tomo_paths.R")
+source("tomo_parameters.R")
+# source("tomo_parameters_remote.R")
+
 t0 <- as.POSIXct("2023-01-20 09:20:00", tz = "UTC")
 t1 <- as.POSIXct("2023-01-20 10:20:00", tz = "UTC")
 t0u <- as.numeric(t0)
@@ -64,9 +69,6 @@ for ( file_i in file_is) {
 
 GNSS_DATA <- as.data.frame(GNSS_DATA_ALL[(t >= t0u) & (t <= t1u),])
 
-source("tomo_paths.R")
-source("tomo_parameters.R")
-# source("tomo_parameters_remote.R")
 tomo$GNSS$averaging_t <- (as.numeric(t1) - as.numeric(t0))
 
 
@@ -74,9 +76,13 @@ CALIBRATE_MEAN <- TRUE
 ESTIMATE_DCB <- TRUE
 tomo$GNSS$modelling_error <- 10
 
-tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- TRUE
+
+tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- FALSE
 tomo$IONOSONDE$topside <- TRUE
 tomo$IONOSONDE$alt_limit <- 800 * 10^3
+tomo$IONOSONDE$times  <- 60 #minutes backwards from t1
+tomo$IONOSONDE$times_ahead <- 0
+
 
 tomo$utils$label <- "_1"
 
@@ -105,7 +111,8 @@ if (online) {
 cat("\nStarting actual tomo run\n")
 source("tomo_paths.R")
 source("tomo_parameters.R")
-# t1 <- as.POSIXct("2011-03-09 23:55:00", tz = "UTC")
+source("tomo_parameters_remote.R")
+# t1 <- as.POSIXct("2023-01-21 11:30:00", tz = "UTC")
 
 for( tomo_i in 1 : 1000) {
   print(tomo_i)
@@ -152,57 +159,57 @@ for( tomo_i in 1 : 1000) {
 # ionotomor::tomo_main(tomo, GNSS_DATA_rmv, CALIBRATE_MEAN, ESTIMATE_DCB, verbose)  
 
   ionotomor::tomo_main(tomo, GNSS_DATA, CALIBRATE_MEAN, ESTIMATE_DCB, verbose)
-# 
-#   check_n <- 1
-#   cat("\nChecking quality #", check_n, "\n")
-#   paths <- dir(paste0(tomo$utils$results_directory, "/tomo"), full.names = TRUE)
-#   tomo_check_path <- paths[which.max(file.info(paths)$ctime)]
-#   tomo_check <- readRDS(file = tomo_check_path)
-#   # Try again without some random measurements
-#   perc_rmv <- 0.001
-#   n <- dim(GNSS_DATA)[1]
-#   while ( max(abs(tomo_check$posterior$mean))  > 5 * 10^(-3) & perc_rmv < 1 ) { 
-#     cat("\nBAD SOLUTION. STARTING RE-ANALYSING.\n")
-#     Sys.sleep(5)
-#     file.remove(tomo_check_path)
-#     
-#     n_rmv <- max(10, round(perc_rmv * n))
-#     rnd_vec <- sample(n, size = n_rmv, replace = FALSE)
-#     GNSS_DATA_rmv <- GNSS_DATA[-rnd_vec,]
-#     
-#     ionotomor::tomo_main(tomo, GNSS_DATA_rmv, CALIBRATE_MEAN, ESTIMATE_DCB, verbose)  
-#     tomo_check <- readRDS(file = paths[which.max(file.info(paths)$ctime)])
-#     check_n <- 1 + check_n
-#     # If solution is still not found, increase the number of removed measurements
-#     perc_rmv <- perc_rmv * 5
-#   }
-#   if (max(abs(tomo_check$posterior$mean))  > 5 * 10^(-3) & perc_rmv < 1 ){
-#     cat("\nCOULD NOT GET A PROPER SOLUTION. CHECK PREVIOUS SOLUTIONS\n")
-#     break
-#   } else {
-#     cat("\nStarting new time timestep\n\n")
-#     Sys.sleep(2)
-#   }
-#   
-#   if (online) {
-# 	# Copy images to Shiny server
-# 	orig_imgs <- vector()
-# 	  orig_imgs[1] <- get_latest(paste0(tomo$utils$results_directory, "/plots/piercepoints"))
-# 	  orig_imgs[2] <- get_latest(paste0(tomo$utils$results_directory, "/plots/tec_map"))
-# 	  orig_imgs[3] <- get_latest(paste0(tomo$utils$results_directory, "/plots/alt_lat"))
-# 	  orig_imgs[4] <- get_latest(paste0(tomo$utils$results_directory, "/plots/alt_long"))
-#  	  orig_imgs[5] <- get_latest(paste0(tomo$utils$results_directory, "/plots/RAD_profiles"))
-# 
-# 	shiny_imgs <- vector()
-# 	  shiny_imgs[1] <- paste0(shiny_path, "/pp.png")
-# 	  shiny_imgs[2] <- paste0(shiny_path, "/tec.png")
-# 	  shiny_imgs[3] <- paste0(shiny_path, "/lat.png")
-# 	  shiny_imgs[4] <- paste0(shiny_path, "/long.png")
-#  	  shiny_imgs[5] <- paste0(shiny_path, "/RAD_prof.png")
-# 
-# 	file.copy(orig_imgs, shiny_imgs, overwrite = TRUE)
-#   }
-# 
+
+  check_n <- 1
+  cat("\nChecking quality #", check_n, "\n")
+  res_paths <- dir(paste0(tomo$utils$results_directory, "/tomo"), full.names = TRUE)
+  tomo_check_path <- res_paths[which.max(file.info(res_paths)$ctime)]
+  tomo_check <- readRDS(file = tomo_check_path)
+  # Try again without some random measurements
+  perc_rmv <- 0.001
+  n <- dim(GNSS_DATA)[1]
+  while ( max(abs(tomo_check$posterior$mean))  > 5 * 10^(-3) & perc_rmv < 1 ) { 
+    cat("\nBAD SOLUTION. STARTING RE-ANALYSING.\n")
+    Sys.sleep(5)
+    file.remove(tomo_check_path)
+    
+    n_rmv <- max(10, round(perc_rmv * n))
+    rnd_vec <- sample(n, size = n_rmv, replace = FALSE)
+    GNSS_DATA_rmv <- GNSS_DATA[-rnd_vec,]
+    
+    ionotomor::tomo_main(tomo, GNSS_DATA_rmv, CALIBRATE_MEAN, ESTIMATE_DCB, verbose)  
+    tomo_check <- readRDS(file = res_paths[which.max(file.info(res_paths)$ctime)])
+    check_n <- 1 + check_n
+    # If solution is still not found, increase the number of removed measurements
+    perc_rmv <- perc_rmv * 5
+  }
+  if (max(abs(tomo_check$posterior$mean))  > 5 * 10^(-3) & perc_rmv < 1 ){
+    cat("\nCOULD NOT GET A PROPER SOLUTION. CHECK PREVIOUS SOLUTIONS\n")
+    break
+  } else {
+    cat("\nStarting new time timestep\n\n")
+    Sys.sleep(2)
+  }
+  
+  if (online) {
+	# Copy images to Shiny server
+	orig_imgs <- vector()
+	  orig_imgs[1] <- get_latest(paste0(tomo$utils$results_directory, "/plots/piercepoints"))
+	  orig_imgs[2] <- get_latest(paste0(tomo$utils$results_directory, "/plots/tec_map"))
+	  orig_imgs[3] <- get_latest(paste0(tomo$utils$results_directory, "/plots/alt_lat"))
+	  orig_imgs[4] <- get_latest(paste0(tomo$utils$results_directory, "/plots/alt_long"))
+ 	  orig_imgs[5] <- get_latest(paste0(tomo$utils$results_directory, "/plots/RAD_profiles"))
+
+	shiny_imgs <- vector()
+	  shiny_imgs[1] <- paste0(shiny_path, "/pp.png")
+	  shiny_imgs[2] <- paste0(shiny_path, "/tec.png")
+	  shiny_imgs[3] <- paste0(shiny_path, "/lat.png")
+	  shiny_imgs[4] <- paste0(shiny_path, "/long.png")
+ 	  shiny_imgs[5] <- paste0(shiny_path, "/RAD_prof.png")
+
+	file.copy(orig_imgs, shiny_imgs, overwrite = TRUE)
+  }
+
   cat("\nStarting new time timestep\n")
   Sys.sleep(2)
 }

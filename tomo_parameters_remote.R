@@ -56,7 +56,7 @@ tomo$domain$lat_res_vec  <- c(5, 1, 0.5, 1, 1)
 tomo$domain$long_breaks  <- c(tomo$domain$long_west, 0, 5, 35, 40, tomo$domain$long_east)
 tomo$domain$long_res_vec <- c(5, 1, 0.5, 1, 5)
 
-tomo$domain$alt_breaks   <- c(tomo$domain$alt_lo, 50 * 10^3, 400 * 10^3, 600 * 10^3, tomo$domain$alt_hi)
+tomo$domain$alt_breaks   <- c(tomo$domain$alt_lo, 50 * 10^3, 600 * 10^3, 800 * 10^3, tomo$domain$alt_hi)
 tomo$domain$alt_res_vec   <- c(10, 10, 50, 100) * 10^3
 
 # Distance (m) between points in raycasting approximation
@@ -91,7 +91,7 @@ tomo$GNSS$limit_elevation_calibration <- 10
 tomo$GNSS$limit_pp_latitude_calibration <- NULL#c(40, 75)
 tomo$GNSS$limit_pp_longitude_calibration <- NULL#c(-20, 60)
 # Modelling error is (1 / sin(el / 180 * pi)) * tomo$GNSS$modelling_error
-tomo$GNSS$modelling_error <- 5
+tomo$GNSS$modelling_error <- 2
 tomo$GNSS$limit_tstart_calibration <- NULL#as.POSIXct("2018-11-09 06:00:00", tz = "UTC")
 tomo$GNSS$limit_tstop_calibration <-  NULL#as.POSIXct("2018-11-09 14:00:00", tz = "UTC")
 
@@ -127,7 +127,7 @@ tomo$IONOSONDE$times_ahead <- 10
 tomo$IONOSONDE$sd_coeff <- 0.2
 tomo$IONOSONDE$outlier_ne_limit_abs <- 20 * 10^11
 
-tomo$IONOSONDE$topside <- TRUE
+tomo$IONOSONDE$topside <- FALSE
 tomo$IONOSONDE$alt_limit <- 1000 * 10^3
 
 

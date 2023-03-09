@@ -161,7 +161,7 @@ tomo$prior$ionosonde_avg_bg$profile <- tomo$IONOSONDE$station_all
 # ----------------------------------------------------------------------------------------
 # Precalculated tomoscand background
 # ----------------------------------------------------------------------------------------
-tomo$prior$tomoscand_bg$USE <- FALSE
+tomo$prior$tomoscand_bg$USE <- TRUE
 tomo$prior$tomoscand_bg$path <- tomoscand_bg_path
 
 # ----------------------------------------------------------------------------------------
@@ -245,15 +245,15 @@ tomo$prior$covariance_parameters$l_hor  	     <- 2.5
 tomo$prior$covariance_parameters$l_long 	     <- 2.5 
 tomo$prior$covariance_parameters$a_scale         <- 0.2014112
 
-tomo$prior$covariance_parameters$l_vert 	     <- 50 * 10^3
-tomo$prior$covariance_parameters$l_hor  	     <- 5
-tomo$prior$covariance_parameters$l_long 	     <- 5
-tomo$prior$covariance_parameters$a_scale         <- 0.1972156
-
-tomo$prior$covariance_parameters$l_vert          <- 100 * 10^3
-tomo$prior$covariance_parameters$l_hor           <- 10
-tomo$prior$covariance_parameters$l_long          <- 10
-tomo$prior$covariance_parameters$a_scale         <- 0.1712219
+# tomo$prior$covariance_parameters$l_vert 	     <- 50 * 10^3
+# tomo$prior$covariance_parameters$l_hor  	     <- 5
+# tomo$prior$covariance_parameters$l_long 	     <- 5
+# tomo$prior$covariance_parameters$a_scale         <- 0.1972156
+# 
+# tomo$prior$covariance_parameters$l_vert          <- 100 * 10^3
+# tomo$prior$covariance_parameters$l_hor           <- 10
+# tomo$prior$covariance_parameters$l_long          <- 10
+# tomo$prior$covariance_parameters$a_scale         <- 0.1712219
 
 
 # tomo$prior$covariance_parameters$l_vert 		 <- 500 * 10^3
