@@ -51,7 +51,7 @@ tomo$domain$alt_breaks           <- NULL
 
 # Below overrides resolutions set above
 tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 50, 58, 70, 75, tomo$domain$lat_north)
-tomo$domain$lat_res_vec  <- c(1, 1, 1, 1, 1)
+tomo$domain$lat_res_vec  <- c(5, 1, 1, 1, 5)
 
 tomo$domain$long_breaks  <- c(tomo$domain$long_west, 5, 10, 35, 40, tomo$domain$long_east)
 tomo$domain$long_res_vec <- c(5, 1, 1, 1, 5)
@@ -91,7 +91,7 @@ tomo$GNSS$limit_elevation_calibration <- 10
 tomo$GNSS$limit_pp_latitude_calibration <- NULL#c(40, 75)
 tomo$GNSS$limit_pp_longitude_calibration <- NULL#c(-20, 60)
 # Modelling error is (1 / sin(el / 180 * pi)) * tomo$GNSS$modelling_error
-tomo$GNSS$modelling_error <- 5
+tomo$GNSS$modelling_error <- 2
 tomo$GNSS$limit_tstart_calibration <- NULL#as.POSIXct("2018-11-09 06:00:00", tz = "UTC")
 tomo$GNSS$limit_tstop_calibration <-  NULL#as.POSIXct("2018-11-09 14:00:00", tz = "UTC")
 
@@ -161,7 +161,7 @@ tomo$prior$ionosonde_avg_bg$profile <- tomo$IONOSONDE$station_all
 # ----------------------------------------------------------------------------------------
 # Precalculated tomoscand background
 # ----------------------------------------------------------------------------------------
-tomo$prior$tomoscand_bg$USE <- TRUE
+tomo$prior$tomoscand_bg$USE <- FALSE
 tomo$prior$tomoscand_bg$path <- tomoscand_bg_path
 
 # ----------------------------------------------------------------------------------------
@@ -229,7 +229,7 @@ tomo$prior$mean_parameters$hilevel  <- 0
 # FALSE: (default) peak is moved to tomo$prior$peak_alt altitude
 tomo$prior$covariance_parameters$dynamic_width <- FALSE
 
-tomo$prior$covariance_parameters$power_perc      <- 0.05
+tomo$prior$covariance_parameters$power_perc      <- 0.1
 tomo$prior$covariance_parameters$sd_peak_width   <- 0 * 10^3
 tomo$prior$covariance_parameters$peak_alt_offset <- 0 * 10^3
 tomo$prior$covariance_parameters$scaleH          <- 120 * 10^3
@@ -245,11 +245,11 @@ tomo$prior$covariance_parameters$l_hor  	     <- 2.5
 tomo$prior$covariance_parameters$l_long 	     <- 2.5 
 tomo$prior$covariance_parameters$a_scale         <- 0.2014112
 
-# tomo$prior$covariance_parameters$l_vert 	     <- 50 * 10^3
-# tomo$prior$covariance_parameters$l_hor  	     <- 5
-# tomo$prior$covariance_parameters$l_long 	     <- 5
-# tomo$prior$covariance_parameters$a_scale         <- 0.1972156
-# 
+tomo$prior$covariance_parameters$l_vert 	     <- 50 * 10^3
+tomo$prior$covariance_parameters$l_hor  	     <- 5
+tomo$prior$covariance_parameters$l_long 	     <- 5
+tomo$prior$covariance_parameters$a_scale         <- 0.2085711
+
 # tomo$prior$covariance_parameters$l_vert          <- 100 * 10^3
 # tomo$prior$covariance_parameters$l_hor           <- 10
 # tomo$prior$covariance_parameters$l_long          <- 10
@@ -336,9 +336,9 @@ tomo$prior$covariance_parameters$E_layer$use_sunrise <- FALSE
 # Initial values if not taken from ionosonde
 tomo$prior$peak_ne_E_default  <- 0.1 * 10^(-5)
 tomo$prior$peak_alt_E_default <- 100 * 10^3
-tomo$prior$covariance_parameters$E_layer$power_perc <- 0.05
+tomo$prior$covariance_parameters$E_layer$power_perc <- 0.1
 
-tomo$prior$covariance_parameters$E_layer$a_scale <- 0.1440649
+tomo$prior$covariance_parameters$E_layer$a_scale <- 0.1265157
 
 tomo$prior$covariance_parameters$E_layer$use           <- TRUE
 tomo$prior$covariance_parameters$E_layer$peak_ne       <- tomo$prior$peak_ne_E_default

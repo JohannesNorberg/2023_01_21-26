@@ -42,7 +42,7 @@ cat("\nStarting bias calibration\n")
 
 source("tomo_paths.R")
 source("tomo_parameters.R")
-source("tomo_parameters_remote.R")
+# source("tomo_parameters_remote.R")
 
 t0 <- as.POSIXct("2023-01-20 09:20:00", tz = "UTC")
 t1 <- as.POSIXct("2023-01-20 10:20:00", tz = "UTC")
@@ -76,16 +76,14 @@ CALIBRATE_MEAN <- TRUE
 ESTIMATE_DCB <- TRUE
 tomo$GNSS$modelling_error <- 10
 
-
 tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- TRUE
 tomo$IONOSONDE$topside <- TRUE
 tomo$IONOSONDE$alt_limit <- 800 * 10^3
 tomo$IONOSONDE$times  <- 60 #minutes backwards from t1
 tomo$IONOSONDE$times_ahead <- 0
 
-
 tomo$utils$label <- "_1"
-
+# undebug(solve_posterior)
 ionotomor::tomo_main(tomo, GNSS_DATA, CALIBRATE_MEAN, ESTIMATE_DCB, verbose)
 
 if (online) {
@@ -111,7 +109,7 @@ if (online) {
 cat("\nStarting actual tomo run\n")
 source("tomo_paths.R")
 source("tomo_parameters.R")
-source("tomo_parameters_remote.R")
+# source("tomo_parameters_remote.R")
 # t1 <- as.POSIXct("2023-01-21 11:30:00", tz = "UTC")
 
 for( tomo_i in 1 : 1000) {

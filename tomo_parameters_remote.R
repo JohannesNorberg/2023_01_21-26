@@ -50,14 +50,14 @@ tomo$domain$long_breaks          <- NULL
 tomo$domain$alt_breaks           <- NULL
 
 # Below overrides resolutions set above
-tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 45, 58, 76, 80, tomo$domain$lat_north)
+tomo$domain$lat_breaks   <- c(tomo$domain$lat_south, 45, 55, 76, 80, tomo$domain$lat_north)
 tomo$domain$lat_res_vec  <- c(5, 1, 0.5, 1, 1)
 
 tomo$domain$long_breaks  <- c(tomo$domain$long_west, 0, 5, 35, 40, tomo$domain$long_east)
 tomo$domain$long_res_vec <- c(5, 1, 0.5, 1, 5)
 
 tomo$domain$alt_breaks   <- c(tomo$domain$alt_lo, 50 * 10^3, 600 * 10^3, 800 * 10^3, tomo$domain$alt_hi)
-tomo$domain$alt_res_vec   <- c(10, 10, 50, 100) * 10^3
+tomo$domain$alt_res_vec   <- c(25, 25, 50, 100) * 10^3
 
 # Distance (m) between points in raycasting approximation
 tomo$domain$path_resolution <- 1000
@@ -248,7 +248,7 @@ tomo$prior$covariance_parameters$a_scale         <- 0.2014112
 tomo$prior$covariance_parameters$l_vert 	     <- 50 * 10^3
 tomo$prior$covariance_parameters$l_hor  	     <- 5
 tomo$prior$covariance_parameters$l_long 	     <- 5
-tomo$prior$covariance_parameters$a_scale         <- 0.1972156
+tomo$prior$covariance_parameters$a_scale         <- 0.2085711
 
 # tomo$prior$covariance_parameters$l_vert          <- 100 * 10^3
 # tomo$prior$covariance_parameters$l_hor           <- 10
@@ -336,9 +336,9 @@ tomo$prior$covariance_parameters$E_layer$use_sunrise <- FALSE
 # Initial values if not taken from ionosonde
 tomo$prior$peak_ne_E_default  <- 0.1 * 10^(-5)
 tomo$prior$peak_alt_E_default <- 100 * 10^3
-tomo$prior$covariance_parameters$E_layer$power_perc <- 0.05
+tomo$prior$covariance_parameters$E_layer$power_perc <- 0.1
 
-tomo$prior$covariance_parameters$E_layer$a_scale <- 0.1440649
+tomo$prior$covariance_parameters$E_layer$a_scale <- 0.1265157
 
 tomo$prior$covariance_parameters$E_layer$use           <- TRUE
 tomo$prior$covariance_parameters$E_layer$peak_ne       <- tomo$prior$peak_ne_E_default
@@ -416,7 +416,7 @@ tomo$prior$calibration$a_scale                     <- 0.1641364
 # "station_bias_var_unestimated" is used when a new bias_subject is introduced
 # #station_bias_var_estimated" is used for biases once estimated
 station_bias_mean_unestimated <- 0
-station_bias_var_estimated    <- 0.5^2
+station_bias_var_estimated    <- 2^2
 station_bias_var_unestimated  <- 100^2 #300^2
 tomo$prior$bias$station_default    <- data.frame(
  "station_bias_mean_unestimated" = c(10, rep(station_bias_mean_unestimated, 5)),
