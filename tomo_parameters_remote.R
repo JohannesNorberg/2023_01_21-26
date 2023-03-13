@@ -91,7 +91,7 @@ tomo$GNSS$limit_elevation_calibration <- 10
 tomo$GNSS$limit_pp_latitude_calibration <- NULL#c(40, 75)
 tomo$GNSS$limit_pp_longitude_calibration <- NULL#c(-20, 60)
 # Modelling error is (1 / sin(el / 180 * pi)) * tomo$GNSS$modelling_error
-tomo$GNSS$modelling_error <- 1
+tomo$GNSS$modelling_error <- 2
 tomo$GNSS$limit_tstart_calibration <- NULL#as.POSIXct("2018-11-09 06:00:00", tz = "UTC")
 tomo$GNSS$limit_tstop_calibration <-  NULL#as.POSIXct("2018-11-09 14:00:00", tz = "UTC")
 
@@ -112,7 +112,7 @@ tomo$RO$GNSS_remove     <- NULL
 # Ionosonde data
 # ----------------------------------------------------------------------------------------
 #tomo$IONOSONDE <-  list()
-tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- TRUE
+tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- FALSE
 tomo$IONOSONDE$directory <- IONOSONDE_directory
 # Stations read and used for validation  
 tomo$IONOSONDE$station_all <- c("TR", "JR055")
