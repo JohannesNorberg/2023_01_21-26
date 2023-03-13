@@ -115,11 +115,11 @@ tomo$RO$GNSS_remove     <- NULL
 tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- TRUE
 tomo$IONOSONDE$directory <- IONOSONDE_directory
 # Stations read and used for validation  
-tomo$IONOSONDE$station_all <- c("TR")
+tomo$IONOSONDE$station_all <- c("TR", "JR055")
 # Stations in use if USE_AS_DIRECT_MEASUREMENTS = TRUE
 tomo$IONOSONDE$station <- tomo$IONOSONDE$station_all#c("TR", "JR")
-tomo$IONOSONDE$times  <- 10 #minutes backwards from t1
-tomo$IONOSONDE$times_ahead <- 10
+tomo$IONOSONDE$times  <- 15 #minutes backwards from t1
+tomo$IONOSONDE$times_ahead <- 5
 # tomo$IONOSONDE$paths <- IONOSONDE_paths
 # tomo$IONOSONDE$station_lat  <- c(69.60, 54.6, 55.47, 51.7, 51.7, 50.0, 50.1, 40.8, 41.9, 40.6, 38.0)
 # tomo$IONOSONDE$station_long <- c(19.2, 13.4, 37.3, -1.5, 14.6, 16.72, 4.6, 12.5, 17.8, 23.5)
@@ -368,7 +368,7 @@ tomo$prior$bias$t_max_diff <- 60 * 24
 
 # Re-estimate station biases
 #CALIBRATION                             <- TRUE
-tomo$prior$calibration$profile                     <- c("TR")
+tomo$prior$calibration$profile                     <- tomo$IONOSONDE$station_all
 tomo$prior$calibration$E_layer_use                 <- FALSE
 tomo$prior$calibration$sd_hilevel                  <- 0
 tomo$prior$calibration$lat_trend_south             <- 1.5
