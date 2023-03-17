@@ -112,7 +112,7 @@ source("tomo_parameters.R")
 source("tomo_parameters_remote.R")
 # t1 <- as.POSIXct("2023-01-21 11:30:00", tz = "UTC")
 
-for( tomo_i in 1 : 1000) {
+for( tomo_i in 1 : 5000) {
   print(tomo_i)
   t0 <- t1
   t1 <- t1 + tomo$minstep * 60  

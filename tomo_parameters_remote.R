@@ -112,7 +112,7 @@ tomo$RO$GNSS_remove     <- NULL
 # Ionosonde data
 # ----------------------------------------------------------------------------------------
 #tomo$IONOSONDE <-  list()
-tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- FALSE
+tomo$IONOSONDE$USE_AS_DIRECT_MEASUREMENTS <- TRUE
 tomo$IONOSONDE$directory <- IONOSONDE_directory
 # Stations read and used for validation  
 tomo$IONOSONDE$station_all <- c("TR", "JR055")
@@ -234,7 +234,7 @@ tomo$prior$covariance_parameters$sd_peak_width   <- 0 * 10^3
 tomo$prior$covariance_parameters$peak_alt_offset <- 0 * 10^3
 tomo$prior$covariance_parameters$scaleH          <- 120 * 10^3
 tomo$prior$covariance_parameters$scaleL          <- 100 * 10^3
-tomo$prior$covariance_parameters$sd_hilevel      <- 0.05
+tomo$prior$covariance_parameters$sd_hilevel      <- 0.1
 tomo$prior$covariance_parameters$lat_trend_south <- 1
 tomo$prior$covariance_parameters$lat_trend_north <- 1
 tomo$prior$covariance_parameters$long_trend_west <- 1
