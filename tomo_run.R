@@ -67,8 +67,6 @@ for ( file_i in file_is) {
   GNSS_DATA_ALL <- rbind(GNSS_DATA_ALL, GNSS_DATA_ALL0)
 }
 
-unique(GNSS_DATA_ALL$satellite_type)
-
 GNSS_DATA <- as.data.frame(GNSS_DATA_ALL[(satellite_type != "GLONASS") & (t >= t0u) & (t <= t1u),])
 
 tomo$GNSS$averaging_t <- (as.numeric(t1) - as.numeric(t0))
