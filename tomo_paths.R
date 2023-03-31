@@ -5,7 +5,7 @@
 # Number of cores used in MUMPS depends on the machine
 # Hence given here, not in the "paramaters" file
 ncores <- 24
-results_directory <- "results_remote_9"
+results_directory <- "results_10"
 data_directory    <- "data"
 
 SAVE_RESULTS <- TRUE

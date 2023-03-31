@@ -10,7 +10,7 @@ parameters_from_here <- TRUE
 # Real data tomo reconstruction files
 results_main_dir <- "."
 results_dir   <- args[1] #"results_remote_9"
-# results_dir   <- "results_remote_9"
+results_dir   <- "results_remote_9"
 
 #par_def <- par()
 
@@ -94,7 +94,7 @@ png_height_tec <-  800
 png_width_panel <-  600
 png_height_panel <- 300
 
-png_width_rad <- 360
+png_width_rad <- 400
 png_height_rad <- 400
 
 png_width_pp <- 800
@@ -102,9 +102,9 @@ png_width_pp <- 800
 lwd_rad <- 1.5
 lwd_rad2 <- 2
 
-png_cex <- 1
+png_cex <- 1.2
 
-legend_cex <- 1
+legend_cex <- 1.5
 
 interp <- FALSE
 direct_plot <- c("TR", "JR055")
@@ -142,7 +142,7 @@ getwd()
 results_path <- file.path(results_main_dir, results_dir, "tomo")
 # Save destination
 save_path <- file.path(results_main_dir, results_dir, save_dir)
-dir.create(save_path, showWarnings = TRUE, recursive = TRUE)
+dir.create(save_path, showWarnings = FALSE, recursive = TRUE)
 # setwd(save_path) # for system commands at the end
 
 
@@ -267,16 +267,16 @@ for (iiii in 1 : length(times)) {
 
   tomo <- readRDS(file = paths[which.min(abs(tomo_times - tt))])
 
-  profiles_mlh <- tomo$profiles_original[tomo$profiles_original$station %in% "mlh",]
-  profiles_mlh$el <- round(profiles_mlh$el / 10) * 10
-  profiles_mlh$az <-  round(profiles_mlh$az / 10) * 10
-  profiles_mlh$az <- profiles_mlh$az %% 360
-  profiles_mlh$az[profiles_mlh$el > 90] <- (profiles_mlh$az[profiles_mlh$el > 90] + 180) %% 360
-  profiles_mlh$el[profiles_mlh$el > 90] <- 180 - profiles_mlh$el[profiles_mlh$el > 90]
-  profiles_mlh$az[profiles_mlh$el == 90] <- 0
-  profiles_mlh$az[profiles_mlh$az == 360] <- 0
-  profiles_mlh <- profiles_mlh %>% mutate(lab = paste(round(el / 10) * 10, round(az / 10) * 10)) %>% filter(lab %in% paste(E_mlh, A_mlh))
-  mlh_available <- unique(data.frame(el = round(profiles_mlh$el / 10) * 10, az = round(profiles_mlh$az / 10 ) * 10))
+#   profiles_mlh <- tomo$profiles_original[tomo$profiles_original$station %in% "mlh",]
+#   profiles_mlh$el <- round(profiles_mlh$el / 10) * 10
+#   profiles_mlh$az <-  round(profiles_mlh$az / 10) * 10
+#   profiles_mlh$az <- profiles_mlh$az %% 360
+#   profiles_mlh$az[profiles_mlh$el > 90] <- (profiles_mlh$az[profiles_mlh$el > 90] + 180) %% 360
+#   profiles_mlh$el[profiles_mlh$el > 90] <- 180 - profiles_mlh$el[profiles_mlh$el > 90]
+#   profiles_mlh$az[profiles_mlh$el == 90] <- 0
+#   profiles_mlh$az[profiles_mlh$az == 360] <- 0
+#   profiles_mlh <- profiles_mlh %>% mutate(lab = paste(round(el / 10) * 10, round(az / 10) * 10)) %>% filter(lab %in% paste(E_mlh, A_mlh))
+#   mlh_available <- unique(data.frame(el = round(profiles_mlh$el / 10) * 10, az = round(profiles_mlh$az / 10 ) * 10))
 
 
   latitudes <- tomo$domain$lat_ax
@@ -343,39 +343,29 @@ for (iiii in 1 : length(times)) {
            ylab = latlab, xlab = longlab, col = col_palette_tec)
 
 
-  if (any(tomo$profiles_original$station == "mlh")) {
-	text(labels = "mlh", x = mlh_long + 10, y = mlh_lat, col = 2, cex = png_cex)
-  }
+  lines(x = c(longitude, longitude), y = latlim, lty = 2, xpd = TRUE) 
+  lines(y = c(latitude, latitude), x = longlim, lty = 2, xpd = TRUE) 
 
   for (iono_stat in unique(tomo$profiles_original$station[tomo$profiles_original$instrument == "ionosonde"])) {
 	iono_i <- which(ionosondes$station == iono_stat)
-	points(x = as.numeric(ionosondes$station_long[iono_i]), y = as.numeric(ionosondes$station_lat[iono_i]), col = 2, cex = png_cex)
-	text(labels = ionosondes$station[iono_i], x = as.numeric(ionosondes$station_long[iono_i]) + 8, y = as.numeric(ionosondes$station_lat[iono_i]), col = 2, cex = png_cex)
+	#points(x = as.numeric(ionosondes$station_long[iono_i]), y = as.numeric(ionosondes$station_lat[iono_i]), col = 2, cex = png_cex)
+   legend(x = as.numeric(ionosondes$station_long[iono_i]) + 2, 
+          y = as.numeric(ionosondes$station_lat[iono_i]) + 2, 
+          legend = paste(ionosondes$station[iono_i]), 
+          box.col = "black", bg = "white", adj = 0.25, 
+          cex = 0.8)
+# 	text(labels = paste(ionosondes$station[iono_i]), x = as.numeric(ionosondes$station_long[iono_i]) + 8, y = as.numeric(ionosondes$station_lat[iono_i]) + 1, col = 2, cex = png_cex, font = 2)
   }
 
   RO <- tomo$satellite_measurements[!is.na(tomo$satellite_measurements$instrument) & tomo$satellite_measurements$instrument == "COSMIC",]
 
   points(x = RO$station_long, y = RO$station_lat, bg = "orange", pch = 21, cex = 2)
   points(x = RO$long, y = RO$lat, pch = "+", col = "orange", cex = 2)
-
-  h <- seq( 100000, 550000, 100000 )
-  E <- mlh_available$el / 180 * pi
-  A <- mlh_available$az / 180 * pi
-
-  for (ii in 1 : length(E)) {
-    pp_coord <- pp(E[ii], A[ii], lat_r = mlh_lat_r, long_r = mlh_long_r, h = h)
-    lines( x = c( mlh_long, pp_coord$pplong ), y = c( mlh_lat, pp_coord$pplat ), col = beam_col, lw = beam_lwd, cex = 1 )
-    points( x = c(mlh_long, pp_coord$pplong ), y = c( mlh_lat, pp_coord$pplat ), col = beam_col, pch = 16, cex = png_cex )
-  }
   
   graphics::rect(xleft = longlim[1], ybottom = latlim[1], xright = longlim[2], ytop = latlim[2], lwd = 2, lty = 2)
   graphics::rect(xleft = longlim[1] + 0.2 , ybottom = latlim[1] + 0.2, xright = longlim[2] - 0.2, ytop = latlim[2] - 0.2, lwd = 1, lty = 2, border = "white")
 
-  lines(x = c(longitude, longitude), y = latlim, lty = 2, xpd = TRUE) 
-  lines(y = c(latitude, latitude), x = longlim, lty = 2, xpd = TRUE) 
-
   dev.off()
-
 
   tec_rec <- ionotomor::get_tec_tomo(tomo)
   tec_rec[tec_rec < 0] <- 0
@@ -566,7 +556,6 @@ for (ionosonde_name in direct_plot) {
 rad_ionos1 <- paste(save_path, "/", t_stamp , "_prof_iono_TR.png", sep = "")  
 rad_ionos2 <- paste(save_path, "/", t_stamp , "_prof_iono_JR055.png", sep = "")  
 
-
 piercepoints <- paste(save_path, "/", t_stamp , "_pp.png", sep = "")
 
 tec_rec <- paste(save_path, "/", t_stamp, "_tec.png", sep = "")
@@ -578,22 +567,20 @@ ne_rec <- paste0(save_path, "/ne_rec.png")
 final <- paste0(save_path, "/", t_stamp, ".png")
 tmp <- paste0(save_path, "/tmp.png")
 
-  system(paste("convert ", rad_ionos1," -crop 345x353+0+0  ",  rad_ionos1,   sep = ""))
-  system(paste("convert ", rad_ionos2,  " -crop 345x390+0+0 ",  rad_ionos2,   sep = ""))
+  system(paste("convert ", rad_ionos1," -crop 420x400+0+0  ",  rad_ionos1,   sep = ""))
+  system(paste("convert ", rad_ionos2,  " -crop 420x400+0+0 ",  rad_ionos2,   sep = ""))
 
-  
   system(paste("convert -append", rad_ionos1, rad_ionos2, "-append", append1, sep = " "))  
 
-
   system(paste("convert -append", ne_rec_lat, ne_rec_long, "-append", ne_rec, sep = " "))  
-  system(paste("convert +append", ne_rec, tec_rec, "+append", ne_rec, sep = " "))  
+  system(paste("convert +append", tec_rec, ne_rec, "+append", ne_rec, sep = " "))  
+
+  system(paste("convert", piercepoints, "-splice 100x0", piercepoints, sep = " "))
 
   system(paste("convert +append", append1, piercepoints, "+append", tmp, sep = " "))  
 
   system(paste("convert -append", ne_rec, tmp, "-append ", final, sep = " "))  
 
-  system(paste("rm",rad_mlh1, rad_mlh2, rad_mlh3, rad_mlh4, rad_ionos1, 
-         rad_ionos2, rad_ionos3, rad_ionos4, rad_ionos5, rad_ionos6, rad_ionos7, rad_ionos8, rad_ionos9, tec_rec, piercepoints,
+  system(paste("rm", rad_ionos1, rad_ionos2, tec_rec, piercepoints,
          ne_rec_lat, ne_rec_long, append1, ne_rec, tmp, sep = " "))
-
 }
