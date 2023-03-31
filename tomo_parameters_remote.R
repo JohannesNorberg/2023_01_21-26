@@ -432,7 +432,7 @@ tomo$prior$bias$station_default    <- data.frame(
 #tomo$prior$bias$station_default[tomo$prior$bias$station_default$satellite_type == "GLONASS", "station_bias_var_estimated"] <- 4
 
 satellite_bias_mean_unestimated <- 0
-satellite_bias_var_estimated    <- 0.000001^2
+satellite_bias_var_estimated    <- 1^2
 satellite_bias_var_unestimated  <- 0.000001^2
 tomo$prior$bias$satellite_default   <- data.frame(
    "satellite_bias_mean_unestimated" = rep(satellite_bias_mean_unestimated, 6),
