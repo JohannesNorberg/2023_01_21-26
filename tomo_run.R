@@ -46,7 +46,6 @@ source("tomo_parameters_remote.R")
 
 t0 <- as.POSIXct("2023-01-20 10:00:00", tz = "UTC")
 t1 <- as.POSIXct("2023-01-20 10:20:00", tz = "UTC")
-
 t0u <- as.numeric(t0)
 t1u <- as.numeric(t1)
 tomo$domain$t0 <- t0
@@ -111,8 +110,8 @@ cat("\nStarting actual tomo run\n")
 source("tomo_paths.R")
 source("tomo_parameters.R")
 source("tomo_parameters_remote.R")
-# t1 <- as.POSIXct("2023-01-20 13:50:00", tz = "UTC")
-tomo_i <- 1
+# t1 <- as.POSIXct("2023-01-21 11:30:00", tz = "UTC")
+
 for( tomo_i in 1 : 5000) {
   print(tomo_i)
   t0 <- t1

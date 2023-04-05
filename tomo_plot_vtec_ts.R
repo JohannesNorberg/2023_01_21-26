@@ -3,14 +3,12 @@
 # devtools::load_all("/Users/norberg/Dropbox/R_packages/ionotomor")
 library(ionotomor)
 library(dplyr)
-parameters_from_here <- TRUE
 
-setwd("/Users/norberg/Dropbox/Projects/2023_01_21-26")
+# setwd("/Users/norberg/Dropbox/Projects/2023_01_21-26")
 # Real data tomo reconstruction files
 results_main_dir <- "."
 # results_dir   <- args[1] #"results_remote_9"
-results_dir   <- "results_remote_9"
-
+results_dir   <- "results_remote_12"
 
 col_palette <- viridis::viridis_pal()(10 * 4 + 1)
 col_palette_diff <- viridis::viridis_pal()(10 * 2 + 1)
@@ -59,6 +57,8 @@ times <- as.POSIXct(strptime(substr(files, start = 6, stop = 17),"%Y%m%d%H%M", t
 
 
 # ------------------------------------------------------------------------------
+# Select TEC values from ref locations
+# ------------------------------------------------------------------------------
 
 tomo <- readRDS(file = paths[1])
 
@@ -75,7 +75,7 @@ for (loc_i in 1 : nrow(refs)) {
   refs_index[loc_i, 2] <- which.min(abs(tomo$domain$long_ax - refs[loc_i, 2]))
 }
 
-TEC <- matrix( ncol = nrow(refs), nrow = 0)
+TEC <- matrix( ncol = nrow(refs) + 1, nrow = 0)
 
 # iiii <- 13
 for (iiii in 1 : length(times)) {
@@ -88,7 +88,6 @@ for (iiii in 1 : length(times)) {
   tt_lab <- format(tt, format =  "%Y-%m-%d %H:%M")
 
   # ------------------------------------------------------------------------------
-  # Plot RECONSTRUCTED ionosphere
 
   paths <- dir(results_path, full.names = TRUE)
   files <- dir(results_path, full.names = FALSE)
@@ -104,17 +103,27 @@ for (iiii in 1 : length(times)) {
   for (refs_i_row in 1 : nrow(refs_index)) {
     TEC_ROW[refs_i_row] <- tec_rec[refs_index[refs_i_row, 1], refs_index[refs_i_row, 2]]  
   }
+  TEC_ROW <- c(tt, TEC_ROW)
   TEC <- rbind(TEC, TEC_ROW)
   
 }
 
+rownames(TEC) <- NULL
+write.table(TEC, paste0(results_dir, "/vtec_ref_time_20-26.txt"))
+
+
+
+TEC <- read.table(paste0(results_dir, "/vtec_ref_time_20-26.txt"))
+times <- as.POSIXct(TEC[, 1], origin="1970-01-01", tz = "UTC")
+
+
 png(paste0(results_dir, "/VTEC_ts.png"), height = 500, width = 1500)
-plot(y = TEC[, 1], x = times, type = 'l', axes = FALSE, 
+plot(y = TEC[, 2], x = times, type = 'l', axes = FALSE, 
      ylim = c(0, 35), xlim = c(min(times), max(times) + 60 * 60 * 8),
      main = "VTEC", ylab = "TECU (10^16/m^2)", xlab = "")
-lines(y = TEC[, 2], x = times, col = 2)
-lines(y = TEC[, 3], x = times, col = 3)
-lines(y = TEC[, 4], x = times, col = 4)
+lines(y = TEC[, 3], x = times, col = 2)
+lines(y = TEC[, 4], x = times, col = 3)
+lines(y = TEC[, 5], x = times, col = 4)
 box()
 axis(side = 2, at = seq(0, 35, 10))
 axis.POSIXct(side = 1, at = seq(trunc(times[1], "day"), round(tail(times, 1), "day") , by = "day"), format = "%b %d")
@@ -124,6 +133,9 @@ dev.off()
 
 
 
+# ------------------------------------------------------------------------------
+# Select TEC values from ref longitude
+# ------------------------------------------------------------------------------
 
 ref_long <- 25
 ref_long_ind <- which.min(abs(tomo$domain$long_ax - ref_long))
@@ -141,7 +153,6 @@ for (iiii in 1 : length(times)) {
   tt_lab <- format(tt, format =  "%Y-%m-%d %H:%M")
 
   # ------------------------------------------------------------------------------
-  # Plot RECONSTRUCTED ionosphere
 
   paths <- dir(results_path, full.names = TRUE)
   files <- dir(results_path, full.names = FALSE)
@@ -157,12 +168,24 @@ for (iiii in 1 : length(times)) {
   
 }
 
-#write.table(TEC_lat, paste0("/Users/norberg/Dropbox/Projects/2023_01_21-26/data/TEC_data/vtec_lat_time_20-26.txt"))
+write.table(TEC_lat, paste0(results_dir, "/vtec_lat_time_20-26.txt"))
+
+
+
+TEC_lat <- read.table(paste0(results_dir, "/vtec_lat_time_20-26.txt"))
+
+
+lat_ax <- c(37.50, 42.50, 45.50, 46.50, 47.50, 48.50, 49.50, 50.50, 51.50, 52.50, 53.50, 54.50,
+55.25, 55.75, 56.25, 56.75, 57.25, 57.75, 58.25, 58.75, 59.25, 59.75, 60.25, 60.75,
+61.25, 61.75, 62.25, 62.75, 63.25, 63.75, 64.25, 64.75, 65.25, 65.75, 66.25, 66.75,
+67.25, 67.75, 68.25, 68.75, 69.25, 69.75, 70.25, 70.75, 71.25, 71.75, 72.25, 72.75,
+73.25, 73.75, 74.25, 74.75, 75.25, 75.75, 76.50, 77.50, 78.50, 79.50, 80.50, 81.50,
+82.50, 83.50, 84.50)
 
 png(paste0(results_dir, "/VTEC_lat_time.png"), height = 500, width = 1500)
 fields::image.plot(main = "VTEC",
                    xlab = "Time", ylab = "Latitude (°)",z = t(TEC_lat)[,nrow(TEC_lat):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(0,40), col = col_palette)
 box()
 axis(side = 2, at = seq(55, 75, 5))
@@ -171,8 +194,8 @@ abline(v  = times[format(times, format = "%H%M") %in% c("0000")], lwd = 0.5)
 abline(v  = times[format(times, format = "%H%M") %in% c( "1200")], lty = 2, lwd = 0.5)
 dev.off()
 
-TEC_lat_mean <- matrix(ncol = length(unique(times_ind)), nrow = nrow(TEC_lat))
 times_ind <- dense_rank(format(times, format = "%H%M"))
+TEC_lat_mean <- matrix(ncol = length(unique(times_ind)), nrow = nrow(TEC_lat))
 
 for (iiii in 1 : length(unique(times_ind))) {
   TEC_lat_mean[,iiii] <- rowMeans(TEC_lat[, which(times_ind == iiii)])
@@ -184,7 +207,7 @@ png(paste0(results_dir, "/VTEC_lat_time-avg.png"), height = 500, width = 1500)
 fields::image.plot(main = "VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), col = col_palette_diff)
 box()
 axis(side = 2, at = seq(55, 75, 5))
@@ -195,12 +218,11 @@ abline(v  = times[format(times, format = "%H%M") %in% c( "1200")], lty = 2, lwd 
 dev.off()
 
 
-
 png(paste0(results_dir, "/VTEC_lat_time-avg_21.png"), height = 500, width = 1500)
 fields::image.plot(main = "Jan 21 | VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), 
                    xlim = as.POSIXct(c("2023-01-21 00:00:00 UTC", "2023-01-22 00:00:00 UTC"), tz = "UTC"),
                    col = col_palette_diff)
@@ -216,7 +238,7 @@ png(paste0(results_dir, "/VTEC_lat_time-avg_22.png"), height = 500, width = 1500
 fields::image.plot(main = "Jan 22 | VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), 
                    xlim = as.POSIXct(c("2023-01-22 00:00:00 UTC", "2023-01-23 00:00:00 UTC"), tz = "UTC"),
                    col = col_palette_diff)
@@ -232,7 +254,7 @@ png(paste0(results_dir, "/VTEC_lat_time-avg_23.png"), height = 500, width = 1500
 fields::image.plot(main = "Jan 23 | VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), 
                    xlim = as.POSIXct(c("2023-01-23 00:00:00 UTC", "2023-01-23 23:59:59 UTC"), tz = "UTC"),
                    col = col_palette_diff)
@@ -248,7 +270,7 @@ png(paste0(results_dir, "/VTEC_lat_time-avg_24.png"), height = 500, width = 1500
 fields::image.plot(main = "Jan 24 | VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), 
                    xlim = as.POSIXct(c("2023-01-24 00:00:00 UTC", "2023-01-24 23:59:59 UTC"), tz = "UTC"),
                    col = col_palette_diff)
@@ -264,7 +286,7 @@ png(paste0(results_dir, "/VTEC_lat_time-avg_25.png"), height = 500, width = 1500
 fields::image.plot(main = "Jan 25 | VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), 
                    xlim = as.POSIXct(c("2023-01-25 00:00:00 UTC", "2023-01-25 23:59:59 UTC"), tz = "UTC"),
                    col = col_palette_diff)
@@ -280,7 +302,7 @@ png(paste0(results_dir, "/VTEC_lat_time-avg_26.png"), height = 500, width = 1500
 fields::image.plot(main = "Jan 26 | VTEC - average day",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_scaled)[,nrow(TEC_lat_scaled):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-10, 10), 
                    xlim = as.POSIXct(c("2023-01-26 00:00:00 UTC", "2023-01-26 23:59:59 UTC"), tz = "UTC"),
                    col = col_palette_diff)
@@ -313,7 +335,7 @@ png(paste0(results_dir, "/VTEC_lat_time-smooth_norm.png"), height = 500, width =
 fields::image.plot(main = "VTEC - smoothed VTEC",
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_smoothed)[,nrow(TEC_lat_smoothed):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), 
                    zlim = c(-3, 3), 
                    col = col_palette_diff)
@@ -326,22 +348,27 @@ abline(v  = times[format(times, format = "%H%M") %in% c( "1200")], lty = 2, lwd 
 dev.off()
 
 png(paste0(results_dir, "/VTEC_lat_time-smooth_65ts.png"), height = 500, width = 1500)
-lat_ind <- which.min(abs(rev(tomo$domain$lat_ax) - 65))
-plot(y = TEC_lat[lat_ind,], x = times, type = 'l', main = "VTEC and smoothed VTEC along lat 65°", ylab = "VTEC", xlab = "Time")
+lat_ind <- which.min(abs(rev(lat_ax) - 65))
+plot(y = TEC_lat[lat_ind,], x = times, type = 'l', main = "VTEC and smoothed VTEC along lat 65°", ylab = "VTEC", xlab = "Time", axes = FALSE)
 lines(y = TEC_smooth[lat_ind,], x= times, col = 2)
+axis(side = 2)
+axis.POSIXct(side = 1, at = seq(trunc(times[1], "day"), round(tail(times, 1), "day") , by = "day"), format = "%b %d")
+abline(v  = times[format(times, format = "%H%M") %in% c("0000")], lwd = 0.5)
+abline(v  = times[format(times, format = "%H%M") %in% c( "1200")], lty = 2, lwd = 0.5)
+legend("topleft", legend = c("VTEC along 65°", "3h moving average"), col = c(1,2), lty = 1)
 dev.off()
 
 DAY <- 20
 DAY <- DAY + 1
 
-png(paste0(results_dir, "/VTEC_lat_time-smooth", "day_panels1",".png"), height = 800, width = 1500)
+png(paste0(results_dir, "/VTEC_lat_time-smooth", "day_panels_2",".png"), height = 800, width = 1500)
 par(mfrow = c(3, 2))
-for (DAY in 21:23) {
+for (DAY in 24:26) {
 
 fields::image.plot(main = paste0("Jan ", DAY," | VTEC - smoothed VTEC"),
                    xlab = "Time", ylab = "Latitude (°)",
                    z = t(TEC_lat_smoothed)[,nrow(TEC_lat_smoothed):1], 
-                   x = times, y = tomo$domain$lat_ax, 
+                   x = times, y = lat_ax, 
                    axes = FALSE, ylim = c(55, 75), zlim = c(-3, 3), 
                    xlim = as.POSIXct(c(paste0("2023-01-", DAY, " 00:00:00 UTC"), paste0("2023-01-", DAY, " 23:59:50 UTC")), tz = "UTC"),
                    col = col_palette_diff)
@@ -355,7 +382,7 @@ abline(v  = times[format(times, format = "%M") %in% c("00")], lwd = 0.5)
 # abline(v  = times[format(times, format = "%H%M") %in% c("0000")], lwd = 0.5)
 # abline(v  = times[format(times, format = "%H%M") %in% c( "1200")], lty = 2, lwd = 0.5)
 
-lat_ind <- which.min(abs(rev(tomo$domain$lat_ax) - 65))
+lat_ind <- which.min(abs(rev(lat_ax) - 65))
 plot(y = TEC_lat[lat_ind,], x = times, xlim = as.POSIXct(c(paste0("2023-01-", DAY, " 00:00:00 UTC"), paste0("2023-01-", DAY,  " 23:59:59 UTC")), tz = "UTC"), type = 'l', main = "VTEC and smoothed VTEC along lat 65°", ylab = "VTEC", xlab = "Time", axes = FALSE)
 lines(y = TEC_smooth[lat_ind,], x = times, col = 2)
 axis.POSIXct(side = 1, at = seq(trunc(times[1], "hour"), round(tail(times, 1), "hour") , by = "hour"), format = "%H:%M")

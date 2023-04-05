@@ -10,7 +10,7 @@ parameters_from_here <- TRUE
 # Real data tomo reconstruction files
 results_main_dir <- "."
 results_dir   <- args[1] #"results_remote_9"
-results_dir   <- "results_remote_9"
+results_dir   <- "results_remote_11"
 
 #par_def <- par()
 
